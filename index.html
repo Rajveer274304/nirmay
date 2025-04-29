@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nirmay Kumar Kushwaha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(ellipse at center, #0f0f2e, #000);
+      color: #00ffe5;
+      font-family: 'Orbitron', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+      animation: fadeIn 2s ease-out; /* Fade-in animation */
+    }
+    h1 {
+      font-size: 5rem; /* Larger font size for better visibility */
+      text-align: center;
+      margin: 100px 20px 20px;
+      text-shadow: 0 0 15px #0ff, 0 0 25px #0ff, 0 0 35px #00ffcc, 0 0 50px #00ffcc;
+      letter-spacing: 5px;
+      color: #00ffe5; /* Glow effect */
+      opacity: 0;
+      animation: glowText 3s ease-in-out forwards 1.5s; /* Glow text animation */
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes glowText {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .glow-box {
+      background: rgba(0, 255, 229, 0.05);
+      border: 1px solid #00ffe5;
+      margin: 30px auto;
+      max-width: 700px;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px rgba(0,255,229,0.4);
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 2s ease-out forwards 2.5s; /* Fade-in for the box */
+    }
+    p {
+      font-size: 1.2rem;
+      line-height: 2;
+      color: #fff;
+    }
+    .neon-button {
+      margin-top: 20px;
+      padding: 10px 25px;
+      font-size: 1rem;
+      color: #0ff;
+      background: transparent;
+      border: 2px solid #0ff;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #0ff;
+      transition: all 0.3s ease;
+    }
+    .neon-button:hover {
+      background: #0ff;
+      color: #000;
+      box-shadow: 0 0 30px #0ff;
+    }
+    footer {
+      text-align: center;
+      margin: 40px;
+      font-size: 1rem;
+      color: #666;
+    }
+    #muteBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #0ff;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 0 10px #0ff;
+    }
+    #muteBtn:hover {
+      background: #fff;
+      color: #0ff;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Music -->
+<audio id="bgMusic" loop autoplay>
+  <source src="synthwave.mp3" type="audio/mp3" />
+</audio>
+<button id="muteBtn">🔊 Mute</button>
+
+<!-- Main Content -->
+<h1 id="introText">Nirmay</h1>
+<div class="glow-box">
+  <p id="introMessage">Welcome! Speak "Hello" or "Assistant".</p>
+  <button class="neon-button" onclick="alert('More coming soon!')">Explore More</button>
+</div>
+
+<!-- Footer -->
+<footer>&copy; 2025 Nirmay Kumar Kushwaha — Made with ⚡</footer>
+
+<!-- Hover Sound -->
+<audio id="hoverSound" src="click.wav" preload="auto"></audio>
+
+<!-- AI Chatbot -->
+<div id="chatbotContainer">
+  <div id="chatHeader">🤖 AI Assistant <span id="chatClose">✖</span></div>
+  <div id="chatMessages"></div>
+  <input id="chatInput" type="text" placeholder="Ask something..." />
+</div>
+
+<!-- Three.js Background -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+  // 3D Background and Spaceship
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  // Sphere (Background element)
+  const geometry = new THREE.SphereGeometry(1, 32, 32);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ffe5, wireframe: true });
+  const sphere = new THREE.Mesh(geometry, material);
+  scene.add(sphere);
+
+  // Spaceship (a simple cone for illustration)
+  const spaceshipGeometry = new THREE.ConeGeometry(0.5, 2, 32);
+  const spaceshipMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const spaceship = new THREE.Mesh(spaceshipGeometry, spaceshipMaterial);
+  spaceship.position.set(0, 2, -5);  // Initial position
+  scene.add(spaceship);
+
+  // Camera position
+  camera.position.z = 5;
+
+  // Spaceship Movement
+  let spaceshipSpeed = 0.02;
+  let spaceshipDirection = 1; // Moving forward or backward
+  let spaceshipRotationSpeed = 0.02;
+
+  // Animation Loop
+  function animate() {
+    requestAnimationFrame(animate);
+
+    // Sphere rotation
+    sphere.rotation.x += 0.01;
+    sphere.rotation.y += 0.01;
+
+    // Spaceship movement
+    spaceship.position.x += spaceshipSpeed * spaceshipDirection;
+    spaceship.rotation.y += spaceshipRotationSpeed;
+
+    // Change direction when the spaceship reaches the edges
+    if (spaceship.position.x > 3 || spaceship.position.x < -3) {
+      spaceshipDirection = -spaceshipDirection;
+    }
+
+    // Render the scene
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  // Mute Toggle
+  const music = document.getElementById('bgMusic');
+  const muteBtn = document.getElementById('muteBtn');
+  muteBtn.addEventListener('click', () => {
+    music.muted = !music.muted;
+    muteBtn.textContent = music.muted ? '🔇 Unmute' : '🔊 Mute';
+  });
+
+  // Hover Sound
+  const hoverSound = document.getElementById('hoverSound');
+  document.querySelectorAll('button, a').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      hoverSound.currentTime = 0;
+      hoverSound.play();
+    });
+  });
+
+  // Voice Recognition & TTS (as in your original code)
+
+  // TTS function for speaking text
+  function speak(text) {
+    const synth = window.speechSynthesis;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1.1;
+    utter.volume = 1;
+    utter.lang = 'en-US';
+    synth.speak(utter);
+  }
+
+  // Greet the user when the page loads
+  window.onload = function() {
+    speak("Hi, welcome to my website!");
+    speak("This website is created by Nirmay Kumar Kushwaha.");
+  }
+
+  // Continue with your voice recognition and chatbot logic...
+</script>
+
+</body>
+</html>
